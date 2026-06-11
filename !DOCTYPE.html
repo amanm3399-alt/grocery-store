@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fortuna Mart | Premium Grocery Store</title>
+    <style>
+        /* --- CSS STYLES --- */
+        :root {
+            --primary: #D4AF37;
+            --primary-dark: #B8962F;
+            --secondary: #006400;
+            --bg-light: #F9F9F9;
+            --text-dark: #333;
+            --white: #ffffff;
+            --shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { background: var(--bg-light); color: var(--text-dark); }
+        a { text-decoration: none; color: inherit; }
+
+        /* --- HEADER --- */
+        header { background: var(--white); box-shadow: var(--shadow); position: sticky; top: 0; z-index: 1000; }
+        .top-bar { background: var(--secondary); color: var(--white); text-align: center; padding: 8px; font-size: 14px; }
+        
+        .nav-container { max-width: 1200px; margin: 0 auto; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+        .logo { font-size: 28px; font-weight: bold; color: var(--secondary); }
+        .logo span { color: var(--primary); }
+        
+        .search-box { display: flex; width: 40%; border: 2px solid var(--primary); border-radius: 25px; }
+        .search-box input { width: 100%; padding: 10px; border: none; outline: none; }
+        .search-box button { background: var(--primary); border: none; padding: 10px 20px; cursor: pointer; color: white; }
+
+        .cart-icon { position: relative; cursor: pointer; font-size: 24px; }
+        .cart-count { position: absolute; top: -5px; right: -10px; background: red; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; display: flex; justify-content: center; align-items: center; }
+
+        nav { background: var(--white); border-top: 1px solid #eee; }
+        .nav-links { max-width: 1200px; margin: 0 auto; display: flex; justify-content: center; gap: 25px; padding: 12px; }
+        .nav-links a { cursor: pointer; font-weight: 500; }
+        .nav-links a:hover { color: var(--primary); }
+
+        /* --- BANNER --- */
+        .banner { background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1604719312566-8912e9227c6a?auto=format&fit=crop&w=1200'); background-size: cover; height: 350px; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; }
+        .banner h1 { font-size: 42px; margin-bottom: 10px; }
+        .banner p { font-size: 18px; margin-bottom: 20px; }
+        .banner button { background: var(--primary); color: white; padding: 12px 30px; border: none; border-radius: 25px; cursor: pointer; font-size: 16px; }
+
+        /* --- CONTAINER --- */
+        .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+        .products-section h2 { font-size: 26px; color: var(--secondary); margin-bottom: 20px; border-left: 4px solid var(--primary); padding-left: 10px; }
+
+        /* --- PRODUCT GRID --- */
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 25px; }
+        .product-card { background: var(--white); border-radius: 10px; overflow: hidden; box-shadow: var(--shadow); transition: 0.3s; }
+        .product-card:hover { transform: translateY(-5px); }
+        .product-img { width: 100%; height: 180px; object-fit: contain; padding: 15px; background: #f5f5f5; }
+        .product-info { padding: 15px; }
+        .product-cat { font-size: 12px; color: var(--primary); font-weight: bold; text-transform: uppercase; }
+        .product-name { font-size: 16px; font-weight: bold; margin: 8px 0; }
+        .product-price { font-size: 20px; color: var(--secondary); font-weight: bold; }
+        .add-btn { width: 100%; padding: 10px; margin-top: 10px; background: var(--secondary); color: white; border: none; cursor: pointer; border-radius: 5px; }
+        .add-btn:hover { background: var(--primary); }
+
+        /* --- SIDEBAR --- */
+        .shop-grid { display: grid; grid-template-columns: 250px 1fr; gap: 30px; }
+        .sidebar { background: var(--white); padding: 20px; border-radius: 10px; box-shadow: var(--shadow); height: fit-content; }
+        .filter-title { font-size: 18px; font-weight: bold; margin-bottom: 15px; border-bottom: 2px solid var(--primary); padding-bottom: 5px; }
+        .category-list label { display: block; margin-bottom: 10px; cursor: pointer; }
+
+        /* --- CART MODAL --- */
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 1500; }
+        .overlay.active { display: block; }
+        
+        .cart-modal { position: fixed; top: 0; right: -400px; width: 100%; max-width: 400px; height: 100%; background: var(--white); z-index: 2000; transition: 0.3s; padding: 20px; overflow-y: auto; }
+        .cart-modal.active { right: 0; }
+        .cart-header { display: flex; justify-content: space-between; padding-bottom: 15px; border-bottom: 1px solid #eee; font-size: 20px; font-weight: bold; }
+        .close-cart { cursor: pointer; font-size: 28px; }
+        
+        .cart-item { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #eee; }
+        .cart-item-name { font-weight: bold; }
+        .cart-item-price { color: var(--secondary); }
+        
+        .cart-total { display: flex; justify-content: space-between; padding: 20px 0; font-size: 22px; font-weight: bold; border-top: 2px solid var(--secondary); margin-top: 20px; }
+        .checkout-btn { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; cursor: pointer; font-size: 16px; border-radius: 5px; }
+
+        /* --- PAGES --- */
+        .page { display: none; }
+        .page.active { display: block; }
+        .page-header { background: var(--secondary); color: white; padding: 50px 20px; text-align: center; }
+        .page-content { background: var(--white); padding: 30px; margin: 30px auto; max-width: 800px; border-radius: 10px; box-shadow: var(--shadow); }
+
+        /* --- FOOTER --- */
+        footer { background: #1a1a1a; color: white; padding: 40px 20px; margin-top: 50px; }
+        .footer-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; }
+        .footer-col h3 { color: var(--primary); margin-bottom: 15px; }
+        .footer-col ul li { margin-bottom: 8px; }
+        .footer-bottom { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #333; }
+
+        /* --- POPUP NOTIFICATION --- */
+        .popup { position: fixed; top: 20px; right: 20px; background: var(--secondary); color: white; padding: 15px 25px; border-radius: 5px; z-index: 3000; transform: translateX(400px); transition: 0.3s; }
+        .popup.show { transform: translateX(0); }
+
+        @media (max-width: 768px) {
+            .shop-grid { grid-template-columns: 1fr; }
+            .sidebar { display: none; }
+            .nav-container { flex-direction: column; gap: 15px; }
+            .search-box { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP BAR -->
+    <div class="top-bar">
+        🚚 Free Delivery Above ₹500 | Same Day Delivery (Order Before 2PM) | 📞 +91 70428 38832
+    </div>
+
+    <!-- HEADER -->
+    <header>
+        <div class="nav-container">
+            <div class="logo">Fortuna<span>Mart</span></div>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search products...">
+                <button onclick="searchProducts()">Search</button>
+            </div>
+            <div class="cart-icon" onclick="toggleCart()">🛒 <span class="cart-count" id="cartCount">0</span></div>
+        </div>
+        <nav>
+            <ul class="nav-links">
+                <li><a onclick="showPage('home')">Home</a></li>
+                <li><a onclick="showPage('shop')">Shop</a></li>
+                <li><a onclick="showPage('blog')">Blog</a></li>
+                <li><a onclick="showPage('support')">Support</a></li>
+                <li><a onclick="showPage('policy')">Policies</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- CART MODAL -->
+    <div class="overlay" id="overlay" onclick="toggleCart()"></div>
+    <div class="cart-modal" id="cartModal">
+        <div class="cart-header">
+            <span>🛒 Your Cart</span>
+            <span class="close-cart" onclick="toggleCart()">&times;</span>
+        </div>
+        <div id="cartItems">
+            <p style="text-align:center;margin-top:20px;color:#666;">Your cart is empty</p>
+        </div>
+        <div id="cartTotal" style="display:none;">
+            <div class="cart-total">
+                <span>Total:</span>
+                <span id="totalAmount">₹0</span>
+            </div>
+            <button class="checkout-btn" onclick="checkout()">Order via WhatsApp 💬</button>
+        </div>
+    </div>
+
+    <!-- POPUP -->
+    <div class="popup" id="popup">✅ Added to Cart!</div>
+
+    <!-- HOME PAGE -->
+    <div id="home" class="page active">
+        <div class="banner">
+            <h1>Premium Quality Groceries</h1>
+            <p>Best Edible Oils, Shampoo & Daily Essentials</p>
+            <button onclick="showPage('shop')">Shop Now</button>
+        </div>
+
+        <div class="container">
+            <div class="products-section">
+                <h2>🔥 Best Sellers</h2>
+                <div class="products-grid" id="bestSellers"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SHOP PAGE -->
+    <div id="shop" class="page">
+        <div class="container">
+            <div class="shop-grid">
+                <div class="sidebar">
+                    <div class="filter-title">Categories</div>
+                    <div class="category-list">
+                        <label><input type="checkbox" value="Edible Oils" onchange="filterProducts()"> Edible Oils</label>
+                        <label><input type="checkbox" value="Personal Care" onchange="filterProducts()"> Personal Care</label>
+                        <label><input type="checkbox" value="Groceries" onchange="filterProducts()"> Groceries</label>
+                    </div>
+                    <br>
+                    <div class="filter-title">Price Range</div>
+                    <input type="range" min="50" max="500" value="500" style="width:100%;" onchange="filterProducts()" id="priceRange">
+                    <p>Max: ₹<span id="priceDisplay">500</span></p>
+                </div>
+                <div>
+                    <div class="products-section">
+                        <h2>🛒 All Products</h2>
+                        <div class="products-grid" id="productGrid"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BLOG PAGE -->
+    <div id="blog" class="page">
+        <div class="page-header">
+            <h1>📝 Health Blog</h1>
+            <p>Tips for healthy living</p>
+        </div>
+        <div class="page-content">
+            <h3>Benefits of Mustard Oil</h3>
+            <p>Mustard oil is rich in antioxidants and vitamins. It helps improve digestion and boosts immunity. Fortuna Kacchi Ghani oil is pure and natural.</p>
+            <br>
+            <h3>How to Choose Right Shampoo</h3>
+            <p>Always choose shampoo according to your hair type. For dry hair, use moisturizing shampoo. For oily hair, use mild herbal shampoo.</p>
+        </div>
+    </div>
+
+    <!-- SUPPORT PAGE -->
+    <div id="support" class="page">
+        <div class="page-header">
+            <h1>📞 Customer Support</h1>
+        </div>
+        <div class="page-content" style="text-align:center;">
+            <h3>We are Here to Help!</h3>
+            <p style="margin:20px 0;">Call us for any queries:</p>
+            <h2 style="color:var(--secondary);">+91 70428 38832</h2>
+            <p style="margin:20px 0;">Email: support@fortunamart.com</p>
+            <p>Working Hours: 9 AM - 9 PM</p>
+        </div>
+    </div>
+
+    <!-- POLICY PAGE -->
+    <div id="policy" class="page">
+        <div class="page-header">
+            <h1>📋 Policies</h1>
+        </div>
+        <div class="page-content">
+            <h3>Delivery Policy</h3>
+            <p>📦 Same Day Delivery if ordered before 2 PM.<br>📦 Next Day Delivery if ordered after 2 PM.<br>📦 Free delivery on orders above ₹500.</p>
+            <br>
+            <h3>No Return & Exchange Policy</h3>
+            <p>❌ We do not accept returns or exchanged once products are purchased.<br>❌ Please check product details before ordering.<br>❌ Contact support for any quality issues.</p>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h3>FortunaMart</h3>
+                <p>Your trusted online grocery store for premium quality products.</p>
+            </div>
+            <div class="footer-col">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a onclick="showPage('home')">Home</a></li>
+                    <li><a onclick="showPage('shop')">Shop</a></li>
+                    <li><a onclick="showPage('blog')">Blog</a></li>
+                    <li><a onclick="showPage('support')">Support</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Contact</h3>
+                <ul>
+                    <li>📞 +91 70428 38832</li>
+                    <li>📧 support@fortunamart.com</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 FortunaMart. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        // --- PRODUCT DATA ---
+        const products = [
+            { id: 1, name: "Fortune Kacchi Ghani Mustard Oil", cat: "Edible Oils", price: 230, img: "https://via.placeholder.com/200x200?text=Fortune+Oil" },
