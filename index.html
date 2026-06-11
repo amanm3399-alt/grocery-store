@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Grocery Store | Online Shopping</title>
+    <style>
+        /* --- CSS VARIABLES --- */
+        :root {
+            --primary: #D4AF37; /* Premium Gold */
+            --primary-dark: #B8962F;
+            --secondary: #006400; /* Deep Green */
+            --bg-light: #F9F9F9;
+            --text-dark: #333;
+            --text-light: #666;
+            --white: #ffffff;
+            --shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+
+        /* --- HEADER --- */
+        header {
+            background: var(--white);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .top-bar {
+            background: var(--secondary);
+            color: var(--white);
+            text-align: center;
+            padding: 5px;
+            font-size: 14px;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+
+        .logo span { color: var(--primary); }
+
+        /* --- SEARCH BAR --- */
+        .search-box {
+            display: flex;
+            width: 40%;
+            border: 2px solid var(--primary);
+            border-radius: 25px;
+            overflow: hidden;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 15px;
+            border: none;
+            outline: none;
+        }
+
+        .search-box button {
+            background: var(--primary);
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+        }
+
+        .search-box button:hover { background: var(--primary-dark); }
+
+        /* --- CART ICON --- */
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: red;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            background: var(--white);
+            border-top: 1px solid #eee;
+        }
+
+        .nav-links {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            padding: 12px 0;
+        }
+
+        .nav-links a {
+            font-weight: 500;
+            color: var(--text-dark);
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover { color: var(--primary); }
+
+        /* --- BANNER --- */
+        .banner {
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1471943311424-646960669fbc?auto=format&fit=crop&w=1200&q=80');
+            background-size: cover;
+            background-position: center;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+        }
+
+        .banner h1 { font-size: 48px; margin-bottom: 10px; }
+        .banner p { font-size: 20px; margin-bottom: 20px; }
+        .banner-btn {
+            background: var(--primary);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .banner-btn:hover { background: var(--primary-dark); transform: scale(1.05); }
+
+        /* --- MAIN CONTAINER --- */
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 30px;
+        }
+
+        /* --- SIDEBAR FILTERS --- */
+        .sidebar {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            height: fit-content;
+        }
+
+        .filter-section { margin-bottom: 25px; }
+        .filter-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 5px;
+        }
+
+        .category-list li { margin-bottom: 10px; }
+        .category-list label { cursor: pointer; display: flex; align-items: center; gap: 8px; }
+        
+        .price-slider {
+            width: 100%;
+        }
+
+        /* --- PRODUCT GRID --- */
+        .products-section h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: var(--secondary);
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: 0.3s;
+        }
+
+        .product-card:hover { transform: translateY(-5px); }
+
+        .product-img {
+            width: 100%;
+            height: 200px;
+            object-fit: contain;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .product-info { padding: 15px; }
+        .product-category {
+            font-size: 12px;
+            color: var(--primary);
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .product-title {
+            font-size: 16px;
+            margin: 5px 0;
+            font-weight: 600;
+        }
+
+        .product-price {
+            font-size: 18px;
+            color: var(--secondary);
+            font-weight: bold;
+        }
+
+        .original-price {
+            font-size: 14px;
+            text-decoration: line-through;
+            color: #999;
+            margin-left: 10px;
+        }
+
+        .add-to-cart {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            background: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .add-to-cart:hover { background: var(--primary); }
+
+        /* --- CART MODAL --- */
+        .cart-modal {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100%;
+            background: white;
+            box-shadow: -5px 0 20px rgba(0,0,0,0.2);
+            z-index: 2000;
+            transition: 0.4s;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .cart-modal.active { right: 0; }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .close-cart { font-size: 24px; cursor: pointer; }
+
+        .cart-items { margin-top: 20px; }
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .cart-total {
+            margin-top: 20px;
+            padding: 20px 0;
+            border-top: 2px solid var(--secondary);
+            font-size: 20px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 15px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        /* --- OVERLAY --- */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1500;
+            display: none;
+        }
+
+        .overlay.active { display: block; }
+
+        /* --- PAGES (Hidden by default) --- */
+        .page { display: none; }
+        .page.active { display: block; }
+
+        .page-header {
+            background: var(--secondary);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .page-content {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        /* --- CONTACT --- */
+        .contact-info {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        
+        .contact-phone {
+            font-size: 24px;
+            color: var(--secondary);
+            font-weight: bold;
+            display: block;
+            margin: 20px 0;
+        }
+
+        /* --- BLOG --- */
+        .blog-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+
+        .blog-img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        .blog-content { padding: 20px; }
+        .blog-title {
+            font-size: 22px;
+            color: var(--secondary);
+            margin-bottom: 10px;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background: #1a1a1a;
+            color: white;
+            padding: 50px 20px 20px;
+            margin-top: 60px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+        }
+
+        .footer-col h3 {
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .footer-col ul li { margin-bottom: 10px; }
+        .footer-col a:hover { color: var(--primary); }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #333;
+            font-size: 14px;
+            color: #999;
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .nav-container { flex-direction: column; gap: 15px; }
+            .search-box { width: 100%; }
+            .container { grid-template-columns: 1fr; }
+            .sidebar { display: none; }
+            .cart-modal { width: 100%; right: -100%; }
+            .banner h1 { font-size: 32px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP BAR -->
+    <div class="top-bar">
+        Free Delivery on Orders Above ₹500 | Same Day Delivery* | Call: +91 70428 38832
+    </div>
+
+    <!-- HEADER -->
+    <header>
+        <div class="nav-container">
+            <div class="logo">Grocery<span>Mart</span></div>
+            
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search for Fortune Oil, Mustard Oil, Shampoo...">
+                <button onclick="searchProducts()">Search</button>
+            </div>
+
+            <div class="cart-icon" onclick="toggleCart()">
+                🛒 <span class="cart-count" id="cartCount">0</span>
+            </div>
+        </div>
+
+        <nav>
+            <ul class="nav-links">
+                <li><a href="#" onclick="showPage('home')">Home</a></li>
+                <li><a href="#" onclick="showPage('shop')">Shop</a></li>
+                <li><a href="#" onclick="showPage('blog')">Blog</a></li>
+                <li><a href="#" onclick="showPage('support')">Support</a></li>
+                <li><a href="#" onclick="showPage('policy')">Policies</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- CART MODAL -->
+    <div class="overlay" id="overlay" onclick="toggleCart()"></div>
+    <div class="cart-modal" id="cartModal">
+        <div class="cart-header">
+            <h3>Your Cart</h3>
+            <span class="close-cart" onclick="toggleCart()">&times;</span>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <p>Your cart is empty</p>
+        </div>
+        <div class="cart-total" id="cartTotal" style="display: none;">
+            <span>Total:</span>
+            <span id="totalAmount">₹0</span>
+        </div>
+        <button class="checkout-btn" onclick="checkout()" id="checkoutBtn" style="display: none;">Proceed to Checkout</button>
+    </div>
+
+    <!-- HOME PAGE -->
+    <div id="home" class="page active">
+        <div class="banner">
+            <h1>Premium Quality Groceries</h1>
+            <p>Fortune Kacchi Ghani, Mustard Oil, Soybean Oil & More</p>
+            <button class="banner-btn" onclick="showPage('shop')">Shop Now
